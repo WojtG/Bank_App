@@ -2,11 +2,11 @@ A demo of a bank application that allows to transfer fictional money between fic
 Dates, numbers format and currencies of each account are programmed using Internalization API, also the application has a timer that automatically logs out a user if he is not using the app. Movements can be sorted according to date or in descending order.
 
 Account 1
-login : js 
+login : js ,
 password: 1111
 
 Account 2 
-login : ads 
+login : ads , 
 password: 2222
 
 TO DO:
