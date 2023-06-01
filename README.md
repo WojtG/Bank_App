@@ -13,3 +13,4 @@ TO DO:
 - add a button that will toggle the password visibility 
 - add error messages in case of wrong login data, unsuccessful transfer etc
 - add a log out button
+- add a create account button
