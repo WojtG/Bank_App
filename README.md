@@ -1,4 +1,4 @@
-A demo of a bank application that allows to transfer fictional money between fictional users (to transfer money to another user, enter the user's login in the appropriate input field) and loan money from fictional bank. Application also has a function of deleting accounts. 
+A demo of a bank application that allows to transfer fictional money between fictional users (to transfer "fake money" to another user, enter the user's login in the appropriate input field) and loan money from fictional bank. Application also has a function of deleting accounts. 
 Dates, numbers format and currencies of each account are programmed using Internalization API, also the application has a timer that automatically logs out a user if he is not using the app. Movements can be sorted according to date or in descending order.
 
 Account 1
