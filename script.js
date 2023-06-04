@@ -42,7 +42,27 @@ const account2 = {
   locale: "en-US",
 };
 
-const accounts = [account1, account2];
+const account3 = {
+  owner: "Kevin De Bruyne",
+  movements: [7000, 4100, -220, -530, -2910, -2000, 6500, -40],
+  interestRate: 1.3,
+  pin: 3333,
+
+  movementsDates: [
+    "2021-04-11T13:15:33.035Z",
+    "2023-04-18T09:48:16.867Z",
+    "2023-05-05T06:04:23.907Z",
+    "2023-05-15T14:18:46.235Z",
+    "2023-05-20T16:33:06.386Z",
+    "2023-05-28T14:43:26.374Z",
+    "2023-06-01T18:49:59.371Z",
+    "2023-06-02T12:01:20.894Z",
+  ],
+  currency: "EUR",
+  locale: "en-GB",
+};
+
+const accounts = [account1, account2, account3];
 
 /////////////////////////////////////////////////
 // Elements
