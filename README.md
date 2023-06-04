@@ -7,6 +7,9 @@ login : js  password: 1111
 Account 2 
 login : ads  password: 2222
 
+Account 3
+login : kdb  password: 3333
+
 TO DO:
 - program the landing page
 - work on website responsiveness
