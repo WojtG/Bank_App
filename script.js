@@ -5,7 +5,7 @@
 const account1 = {
   owner: "John Stones",
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, 
+  interestRate: 1.2,
   pin: 1111,
 
   movementsDates: [
@@ -19,7 +19,7 @@ const account1 = {
     "2023-05-23T10:51:36.790Z",
   ],
   currency: "EUR",
-  locale: "pl-PL", // de-DE
+  locale: "pl-PL",
 };
 
 const account2 = {
@@ -73,23 +73,45 @@ const labelSumIn = document.querySelector(".summary__value--in");
 const labelSumOut = document.querySelector(".summary__value--out");
 const labelSumInterest = document.querySelector(".summary__value--interest");
 const labelTimer = document.querySelector(".timer");
-
 const containerApp = document.querySelector(".app");
 const containerMovements = document.querySelector(".movements");
-
-const btnLogin = document.querySelector(".login__btn");
 const btnTransfer = document.querySelector(".form__btn--transfer");
 const btnLoan = document.querySelector(".form__btn--loan");
 const btnClose = document.querySelector(".form__btn--close");
 const btnSort = document.querySelector(".btn--sort");
-
-const inputLoginUsername = document.querySelector(".login__input--user");
-const inputLoginPin = document.querySelector(".login__input--pin");
 const inputTransferTo = document.querySelector(".form__input--to");
 const inputTransferAmount = document.querySelector(".form__input--amount");
 const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
+const appNav = document.querySelector(".app__nav");
+
+const allModals = document.querySelectorAll(".modal");
+const modalSignUp = document.querySelector(".modal--sign-up");
+const modalLogin = document.querySelector(".modal--login");
+const overlay = document.querySelector(".overlay");
+const btnsCloseModal = document.querySelectorAll(".btn--close-modal");
+const btnsOpenModalSignUp = document.querySelectorAll(
+  ".btn--show-modal-signup"
+);
+const btnOpenModalLogin = document.querySelector(".btn--show-modal-login");
+const btnScrollTo = document.querySelector(".btn--scroll-to");
+const section1 = document.getElementById("section--1");
+const navlinksEl = document.querySelector(".nav__links");
+const tabs = document.querySelectorAll(".operations__tab");
+const tabsContainer = document.querySelector(".operations__tab-container");
+const tabsContent = document.querySelectorAll(".operations__content");
+const navEl = document.querySelector(".nav");
+const headerEl = document.querySelector(".header");
+const allSections = document.querySelectorAll(".section");
+const lazyImages = document.querySelectorAll("img[data-src]");
+const btnLogin = document.querySelector(".login__btn");
+const inputLoginUsername = document.querySelector(".login__input--user");
+const inputLoginPin = document.querySelector(".login__input--pin");
+const landingPage = document.querySelector(".landing-page");
+const btnLogout = document.querySelector(".btn--logout");
+const btnSignUp = document.querySelector(".btn--signup");
+const inputsSignUpModal = document.querySelectorAll(".modal--sign-up input");
 
 /////////////////////////////////////////////////
 
@@ -124,7 +146,6 @@ const formatCurrency = function (value, locale, currency) {
 
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = "";
-
   const movs = sort
     ? acc.movements.slice().sort((a, b) => a - b)
     : acc.movements;
@@ -227,6 +248,33 @@ const updateUI = function (acc) {
   ).format(currDate);
 };
 
+const createAccount = function () {
+  const variable = {
+    accountNumber: {
+      owner: `${firstName} ${lastName}`,
+      movements: [],
+      interestRate: 1.1,
+      pin,
+      movementsDates: [],
+      currency: "EUR",
+      locale: navigator.language,
+    },
+  };
+
+  accounts.push(variable.accountNumber);
+  createUsernames(accounts);
+};
+
+const LogginOut = function () {
+  containerApp.classList.add("hidden");
+  btnLogout.classList.add("hidden");
+  labelWelcome.classList.add("hidden");
+  labelWelcome.textContent = "";
+  landingPage.classList.remove("hidden");
+  appNav.style.padding = "0";
+  currentAccount = "";
+};
+
 const startLogOutTimer = function () {
   const tick = function () {
     const minutes = `${Math.trunc(time / 60)}`.padStart(2, 0);
@@ -238,9 +286,7 @@ const startLogOutTimer = function () {
     //when 0 seconds, stop timer and log out user
     if (time === 0) {
       clearInterval(timer);
-      containerApp.style.opacity = "0";
-      labelWelcome.textContent = "Log in to get started";
-      currentAccount = "";
+      LogginOut();
     }
 
     time--;
@@ -255,6 +301,102 @@ const startLogOutTimer = function () {
 
   return timer;
 };
+
+//handling modals
+
+//TODO: change the logic of opening and closing modals
+const openModal = function (e) {
+  e.preventDefault();
+  this.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+};
+
+const closeModal = function () {
+  overlay.classList.add("hidden");
+  allModals.forEach((modal) => modal.classList.add("hidden"));
+};
+
+const handleHover = function (e) {
+  if (e.target.classList.contains("nav__link")) {
+    const link = e.target;
+    const links = link.closest(".nav").querySelectorAll(".nav__link");
+    const logo = link.closest(".nav").querySelector("img");
+
+    links.forEach((el) => {
+      if (el !== link) el.style.opacity = this;
+    });
+
+    logo.style.opacity = this;
+  }
+};
+
+//sticky nav effect
+
+const stickyNav = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) navEl.classList.add("sticky");
+  else navEl.classList.remove("sticky");
+};
+
+//
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${getComputedStyle(navEl).height}`,
+});
+
+headerObserver.observe(headerEl);
+
+//revealing sections
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove("section--hidden");
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach((section) => {
+  sectionObserver.observe(section);
+  section.classList.add("section--hidden");
+});
+
+// Lazy loading Images
+
+const replaceImg = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+  entry.target.src = entry.target.dataset.src;
+  entry.target.addEventListener("load", function (e) {
+    this.classList.remove("lazy-img");
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(replaceImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: "200px",
+});
+
+lazyImages.forEach((img) => imgObserver.observe(img));
+
+//cookie message component
+
+const message = document.createElement("div");
+message.classList.add("cookie-message");
+
+message.innerHTML =
+  '<p>We use technical and analytics cookies to ensure that we give you the best experience on our website</p> <button class="btn btn--close-cookie "> Got it! </button>';
+
+document.querySelector(".header").append(message);
 
 ///////////////////////////////////////
 // Event handlers
@@ -273,9 +415,14 @@ btnLogin.addEventListener("click", function (e) {
     // Display UI and message
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(" ")[0]
-    }`;
-    containerApp.style.opacity = 100;
-
+    }!`;
+    labelWelcome.classList.remove("hidden");
+    btnLogout.classList.remove("hidden");
+    appNav.style.padding = "2em";
+    containerApp.classList.remove("hidden");
+    landingPage.classList.add("hidden");
+    modalLogin.classList.add("hidden");
+    overlay.classList.add("hidden");
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
@@ -366,8 +513,7 @@ btnClose.addEventListener("click", function (e) {
     // Delete account
     accounts.splice(index, 1);
 
-    // Hide UI
-    containerApp.style.opacity = 0;
+    LogginOut();
   }
 
   //reset input fields
@@ -381,4 +527,217 @@ btnSort.addEventListener("click", function (e) {
   sorted = !sorted;
 });
 
+btnSignUp.addEventListener("click", function (e) {
+  e.preventDefault();
+  const accountNumber = `account${accounts.length + 1}`;
+  const firstName = document.getElementById("fname").value;
+  const lastName = document.getElementById("sname").value;
+  const pin = +document.getElementById("password-signup").value;
+  const confirmPin = +document.getElementById("password-confirm").value;
+  //creating new account
+  if (confirmPin === pin) {
+    const variable = {
+      accountNumber: {
+        owner: `${firstName} ${lastName}`,
+        movements: [],
+        interestRate: 1.1,
+        pin,
+        movementsDates: [],
+        currency: "EUR",
+        locale: navigator.language,
+      },
+    };
+    accounts.push(variable.accountNumber);
+    createUsernames(accounts);
+    closeModal();
+    inputsSignUpModal.forEach((input) => (input.value = ""));
+  }
+});
 
+btnLogout.addEventListener("click", LogginOut);
+
+btnsOpenModalSignUp.forEach((btn) =>
+  btn.addEventListener("click", openModal.bind(modalSignUp))
+);
+
+btnOpenModalLogin.addEventListener("click", openModal.bind(modalLogin));
+
+btnsCloseModal.forEach((btn) => btn.addEventListener("click", closeModal));
+
+overlay.addEventListener("click", closeModal);
+
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    //TODO: add more specific condition
+    closeModal();
+  }
+});
+
+//"Learn more" btn with smooth scrolling
+
+btnScrollTo.addEventListener("click", function () {
+  // window.scrollTo({
+  //   top: section1.getBoundingClientRect().top + window.pageYOffset,
+  //   left: section1.getBoundingClientRect().left + window.pageXOffset,
+  //   behavior: 'smooth',
+  // });
+
+  section1.scrollIntoView({ behavior: "smooth" });
+});
+
+//Page navigation
+
+navlinksEl.addEventListener("click", function (e) {
+  e.preventDefault();
+  if (
+    e.target.classList.contains("nav__link") &&
+    e.target.getAttribute("href") !== "#"
+  ) {
+    const id = e.target.getAttribute("href");
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+//Tabbed component
+
+tabsContainer.addEventListener("click", function (e) {
+  e.preventDefault();
+  const btnClicked = e.target.closest(".operations__tab");
+
+  if (!btnClicked) return;
+
+  //tabs
+
+  tabs.forEach((tab) => {
+    tab.classList.remove("operations__tab--active");
+  });
+
+  btnClicked.classList.add("operations__tab--active");
+
+  const contentEl = document.querySelector(
+    `.operations__content--${btnClicked.dataset.tab}`
+  );
+
+  // tabs content
+
+  tabsContent.forEach((contentDiv) => {
+    contentDiv.classList.remove("operations__content--active");
+  });
+
+  contentEl.classList.add("operations__content--active");
+});
+
+//Menu fade animation
+
+// navEl.addEventListener('mouseover', function (e) {
+//   if (e.target.classList.contains('nav__link')) {
+//     const link = e.target;
+//     const links = link.closest('.nav').querySelectorAll('.nav__link');
+//     const logo = link.closest('.nav').querySelector('img');
+
+//     links.forEach(link => (link.style.opacity = '0.5'));
+//     logo.style.opacity = '0.5';
+//     link.style.opacity = '1';
+//   }
+// });
+
+// navEl.addEventListener('mouseout', function (e) {
+//   const link = e.target;
+//   const links = link.closest('.nav').querySelectorAll('.nav__link');
+//   links.forEach(link => (link.style.opacity = '1'));
+//   logo.style.opacity = '1';
+// });
+
+navEl.addEventListener("mouseover", handleHover.bind("0.5"));
+
+navEl.addEventListener("mouseout", handleHover.bind("1"));
+
+//Slider
+
+const slider = function () {
+  const slides = document.querySelectorAll(".slide");
+  const btnSlideLeft = document.querySelector(".slider__btn--left");
+  const btnSlideRight = document.querySelector(".slider__btn--right");
+  const dotsContainer = document.querySelector(".dots");
+
+  let currSlide = 0;
+  const maxSlide = slides.length;
+
+  //functions
+
+  const createDots = function () {
+    slides.forEach((_, i) => {
+      const htmlTemplate = `<button class="dots__dot" data-slide="${i}"></button>`;
+      dotsContainer.insertAdjacentHTML("beforeend", htmlTemplate);
+    });
+  };
+
+  const activateDot = function (slide) {
+    dotsContainer
+      .querySelectorAll(".dots__dot")
+      .forEach((dot) => dot.classList.remove("dots__dot--active"));
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add("dots__dot--active");
+  };
+
+  //sliding logic
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  const nextSlide = function () {
+    if (currSlide === maxSlide - 1) {
+      currSlide = 0;
+    } else {
+      currSlide++;
+    }
+    goToSlide(currSlide);
+    activateDot(currSlide);
+  };
+
+  const previousSlide = function () {
+    if (currSlide === 0) {
+      currSlide = maxSlide - 1;
+    } else {
+      currSlide--;
+    }
+    goToSlide(currSlide);
+    activateDot(currSlide);
+  };
+
+  //event handlers
+
+  const initialization = function () {
+    goToSlide(0); //slides will line up next to each other when the page is loaded
+    createDots(); //dot btns will be created when the page is loaded
+    activateDot(0);
+  };
+
+  btnSlideRight.addEventListener("click", nextSlide);
+  btnSlideLeft.addEventListener("click", previousSlide);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") previousSlide();
+    else if (e.key === "ArrowRight") nextSlide();
+  });
+
+  dotsContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("dots__dot")) {
+      currSlide = +e.target.dataset.slide;
+      goToSlide(currSlide);
+      activateDot(currSlide);
+    }
+  });
+
+  initialization();
+};
+slider();
+
+document
+  .querySelector(".btn--close-cookie")
+  .addEventListener("click", function () {
+    message.remove();
+  });
