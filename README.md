@@ -7,9 +7,6 @@ Homepage is created mostly by using IntersectionObserver API,that allows us to t
 scroll position and react to it in a appropiete way. For most of buttons and links,
 the event delegation was implemented, for the sake of better performence off the site.
 
-In this project I learned how to use Internalization and IntersecionObserver API
-and how html data atrributes can be used in JavaScript to modify html and css.
-
 <h3>Login data</h3>
 
 Account 1
